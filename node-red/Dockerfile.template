@@ -1,0 +1,90 @@
+###
+# Build step
+###
+FROM balenalib/%%BALENA_MACHINE_NAME%%-debian-node:latest as build
+
+WORKDIR /usr/src/app
+
+RUN apt-get -q update && apt-get install -yq --no-install-recommends \
+	build-essential \
+  git \
+  npm \
+	&& apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# reComputer RS485
+RUN git clone https://github.com/Seeed-Studio/seeed-linux-dtoverlays 
+
+COPY ./app/package.json package.json
+COPY ./app/package-lock.json package-lock.json
+
+
+RUN JOBS=MAX npm install -g --production --unsafe-perm \
+      node-red \
+      node-gyp \
+      serialport \
+      node-red-node-random \
+      node-red-contrib-modbus \
+      node-red-contrib-influxdb \
+      node-red-contrib-buffer-parser \
+      node-red-contrib-opcua \
+      node-red-contrib-mqtt-sparkplug-plus \
+      @flowforge/node-red-dashboard \
+      node-red-contrib-s7 \
+      node-red-contrib-balena \
+
+    && JOBS=MAX npm install --unsafe-perm --production && npm cache clean --force
+
+###
+# Runtime image
+###
+FROM balenalib/%%BALENA_MACHINE_NAME%%-debian-python:latest
+
+ENV INITSYSTEM on
+
+RUN apt-get update && apt-get install -yq --no-install-recommends \
+  build-essential \
+  g++ \
+  make \
+  python-dev \
+  libatomic1 \
+  git \
+  systemd-sysv \
+  openssh-client \
+  minicom \
+  libgpiod-dev \
+  && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install both DBus and systemd support to run systemctl hw-config
+RUN install_packages dbus systemd
+
+# reComputer RS485
+RUN mkdir /usr/local/rs485_DE
+COPY --from=build /usr/src/app/seeed-linux-dtoverlays/tools/rs485_control_DE/* /usr/local/rs485_DE/
+RUN gcc -o /usr/local/rs485_DE/rs485_DE /usr/local/rs485_DE/rs485_DE.c -lutil -lgpiod \
+  cp /usr/local/rs485_DE/rs485_DE /usr/local/bin/rs485_DE \
+  echo "Starting rs485_DE instances" \
+  ./usr/local/bin/rs485_DE /dev/ttyAMA2 /dev/gpiochip0 6 /dev/ttyAMA10 /dev/gpiochip2 12 & \
+  ./usr/local/bin/rs485_DE /dev/ttyAMA5 /dev/gpiochip0 24 /dev/ttyAMA12 & \
+  ./usr/local/bin/rs485_DE /dev/ttyAMA3 /dev/gpiochip0 17 /dev/ttyAMA11 & \
+  echo "rs485_DE instances started"
+
+# Defines our working directory in container
+WORKDIR /usr/src/app
+
+# Copy over the files created in the previous step, including lib/, bin/
+COPY --from=build /usr/local/bin /usr/local/bin
+COPY --from=build /usr/local/lib/node_modules /usr/local/lib/node_modules
+COPY --from=build /usr/src/app/node_modules /usr/src/app/node_modules
+
+COPY ./ssh_config /etc/ssh/ssh_config
+
+
+# This will copy all files in our root to the working  directory in the container
+COPY ./app ./
+
+# Enable udev for detection of dynamically plugged devices
+ENV UDEV=on
+
+# server.js will run when container starts up on the device
+CMD ["bash", "/usr/src/app/start.sh"]
+
