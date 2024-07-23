@@ -1,4 +1,4 @@
-# MING stack for Seeed Studio ReComputer R1000 
+# Seeed Studio ReComputer R1000 running on balena
 
 This is a reference architecture to run on your Seeed Studio ReComputer R1000 based on Raspberry Pi CM4 with the MING stack on balena. 
 
