@@ -22,7 +22,7 @@ Follow instructions, click Add a Device and flash an SD card with that OS image 
 
 Once the release is successfully built on your fleet in balenaCloud, click `Add device`.
 
-And select the device type `Raspberry Pi 4 (using 64bit OS)` balenaOS version. Add the Wi-Fi credentials if needed, and click `Flash` or `Download` the balenaOS image.
+And select the device type `Raspberry Pi Compute Module 4 IO BOARD` balenaOS version. Add the Wi-Fi credentials if needed, and click `Flash` or `Download` the balenaOS image.
 
 Use balenaEtcher to flash the SD card with the balenaOS image.
 
