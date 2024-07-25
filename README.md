@@ -49,3 +49,22 @@ Define the DT Overlays to enable all the I/O capabilities of the reComputer R100
 
 If you are running a fleet of devices, you should do this from the Fleet level in the Fleet `Configuration` section. Then all the devices from your fleet will inherit the DT overlays and parameters.
 
+
+## Configure nodeRED
+
+These variables you can set them in the balenaCloud Device Variables tab for the device (or globally for the whole application). If you would like to change your login credentials feel free to update these variables.
+
+Variable Name | Value | Description | Default
+------------ | ------------- | ------------- | -------------
+**`USERNAME`** | `STRING` | Define a new username | `balena`
+**`PASSWORD`** | `STRING` | Define a new password | `balena`
+**`ENCRIPTION_KEY`** | `STRING` | Define a new key to encrypt nodeRED system | `balena`
+
+
+## Troubleshooting
+
+If you detect any issue using this block, feel free to contact us at the [forums.balena.io](https://forums.balena.io).
+
+
+
+
