@@ -62,12 +62,6 @@ RUN mkdir /usr/local/rs485_DE
 COPY --from=build /usr/src/app/seeed-linux-dtoverlays/tools/rs485_control_DE/* /usr/local/rs485_DE/
 RUN gcc -o /usr/local/rs485_DE/rs485_DE /usr/local/rs485_DE/rs485_DE.c -lutil -lgpiod
 RUN cp /usr/local/rs485_DE/rs485_DE /usr/local/bin/rs485_DE
-RUN echo "Starting rs485_DE instances.........................." 
-RUN cd /usr/local/bin
-RUN ./rs485_DE /dev/ttyAMA2 /dev/gpiochip0 6 /dev/ttyAMA10 /dev/gpiochip2 12 & 
-RUN ./rs485_DE /dev/ttyAMA5 /dev/gpiochip0 24 /dev/ttyAMA12 & 
-RUN ./rs485_DE /dev/ttyAMA3 /dev/gpiochip0 17 /dev/ttyAMA11 & 
-RUN echo "rs485_DE instances started..........................."
 
 # Defines our working directory in container
 WORKDIR /usr/src/app

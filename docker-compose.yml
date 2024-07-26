@@ -61,14 +61,6 @@ services:
         - "/dev/gpiomem:/dev/gpiomem"
         - "/dev/i2c-1:/dev/i2c-1"
         - "/dev/ttyUSB0:/dev/ttyUSB0"
-        - "/dev/ttyAMA2:/dev/ttyAMA1"
-        - "/dev/ttyAMA3:/dev/ttyAMA2"
-        - "/dev/ttyAMA5:/dev/ttyAMA3"
-        - "/dev/ttyAMA10:/dev/ttyAMA10"
-        - "/dev/ttyAMA11:/dev/ttyAMA11"
-        - "/dev/ttyAMA12:/dev/ttyAMA12"
-        - "/dev/gpiochip0:/dev/gpiochip0"
-        - "/dev/gpiochip2:/dev/gpiochip2"
 
   # ------------------------------------------------------------------------------------
   # Grafana
